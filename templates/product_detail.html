@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+    {% if product.category %}
+      <li class="breadcrumb-item">{{ product.category }}</li>
+    {% endif %}
+    <li class="breadcrumb-item active">{{ product.name }}</li>
+  </ol>
+</nav>
+
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="card shadow-sm border-0">
+      <div class="bg-white d-flex align-items-center justify-content-center p-3" style="min-height: 420px;">
+        {% if product.image %}
+          <img src="{{ url_for('static', filename='uploads/' + product.image) }}" alt="{{ product.name }}" class="img-fluid" style="max-height: 500px; object-fit: contain;">
+        {% else %}
+          <span class="text-muted">No Image</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    {% if product.category %}
+      <span class="badge bg-secondary mb-2">{{ product.category }}</span>
+    {% endif %}
+    <h2 class="fw-bold">{{ product.name }}</h2>
+    <p class="fs-3 fw-bold text-primary mb-2">Rs. {{ product.price }}</p>
+
+    {% if product.stock > 0 %}
+      <span class="badge bg-success mb-3">In Stock: {{ product.stock }}</span>
+    {% else %}
+      <span class="badge bg-danger mb-3">Out of Stock</span>
+    {% endif %}
+
+    <h6 class="fw-semibold mt-3">Description</h6>
+    <p class="text-muted">{{ product.description or 'No description available.' }}</p>
+
+    <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}">
+      {% if product.sizes %}
+        <h6 class="fw-semibold mt-3">Select Size</h6>
+        <div class="mb-3">
+          {% for size in product.sizes.split(',') %}
+            <input type="radio" class="btn-check" name="size" id="size{{ loop.index }}" value="{{ size.strip() }}" required>
+            <label class="btn btn-outline-dark me-1 mb-1" for="size{{ loop.index }}">{{ size.strip() }}</label>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if product.colors %}
+        <h6 class="fw-semibold mt-3">Select Color</h6>
+        <div class="mb-3">
+          {% for color in product.colors.split(',') %}
+            <input type="radio" class="btn-check" name="color" id="color{{ loop.index }}" value="{{ color.strip() }}" required>
+            <label class="btn btn-outline-dark me-1 mb-1" for="color{{ loop.index }}">{{ color.strip() }}</label>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="mt-4 d-flex gap-2">
+        {% if product.stock > 0 %}
+          <button type="submit" class="btn btn-primary btn-lg flex-fill">
+            <i class="bi bi-cart-plus"></i> Add to Cart
+          </button>
+        {% endif %}
+        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-lg">Back</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
