@@ -8,7 +8,7 @@ import stripe
 from models import db, Product, User, Order, OrderItem
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://ecom_user:Shop1234@localhost/ecommerce_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'mysql+pymysql://ecom_user:Shop1234@localhost/ecommerce_db')
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['SECRET_KEY'] = 'change-this-to-any-random-text'
 db.init_app(app)
