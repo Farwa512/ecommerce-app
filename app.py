@@ -62,8 +62,14 @@ with app.app_context():
 
 @app.route('/')
 def index():
-    products = Product.query.filter_by(is_active=True).all()
-    return render_template('index.html', products=products)
+    q = request.args.get('q', '').strip()
+    query = Product.query.filter_by(is_active=True)
+    if q:
+        query = query.filter(
+            db.or_(Product.name.ilike(f'%{q}%'), Product.category.ilike(f'%{q}%'))
+        )
+    products = query.all()
+    return render_template('index.html', products=products, q=q)
 
 
 @app.route('/product/<int:id>')

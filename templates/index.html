@@ -4,7 +4,16 @@
   <h1 class="display-6 fw-bold">Welcome to My Shop</h1>
   <p class="lead mb-0">Discover quality products at the best prices.</p>
 </div>
-<h2 class="mb-4">Our Products</h2>
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+  <h2 class="mb-0">Our Products</h2>
+  <form method="get" action="{{ url_for('index') }}" class="d-flex gap-2">
+    <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Search products...">
+    <button type="submit" class="btn btn-primary">Search</button>
+    {% if q %}
+      <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Clear</a>
+    {% endif %}
+  </form>
+</div>
 <div class="row g-4">
   {% for product in products %}
     <div class="col-lg-3 col-md-4 col-sm-6">
@@ -45,7 +54,7 @@
       </div>
     </div>
   {% else %}
-    <p class="text-muted">No products available yet.</p>
+        <p class="text-muted">{% if q %}No products found for "{{ q }}".{% else %}No products available yet.{% endif %}</p>
   {% endfor %}
 </div>
 {% endblock %}
