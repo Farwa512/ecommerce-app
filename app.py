@@ -352,4 +352,4 @@ def payment_success():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=os.environ.get('FLASK_DEBUG') == '1', host=os.environ.get('FLASK_HOST', '127.0.0.1'), port=5000)
