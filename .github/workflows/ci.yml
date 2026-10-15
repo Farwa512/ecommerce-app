@@ -43,7 +43,7 @@ jobs:
         run: bandit -r . -ll
 
       - name: pip-audit dependency scan
-        run: pip-audit -r requirements.txt
+        run: pip-audit --disable-pip --no-deps -r requirements.txt
 
   docker:
     name: Docker build and push

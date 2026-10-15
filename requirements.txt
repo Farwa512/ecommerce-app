@@ -20,4 +20,4 @@ stripe==16.0.0
 typing_extensions==4.16.0
 urllib3==2.8.0
 Werkzeug==3.1.9
-gunicorn
+gunicorn==26.2.0
