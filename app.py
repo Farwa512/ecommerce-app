@@ -8,7 +8,7 @@ import stripe
 from models import db, Product, User, Order, OrderItem
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://ecom_user:Shop1234@localhost/ecommerce_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'mysql+pymysql://ecom_user:Shop1234@localhost/ecommerce_db')
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['SECRET_KEY'] = 'change-this-to-any-random-text'
 db.init_app(app)
@@ -62,8 +62,14 @@ with app.app_context():
 
 @app.route('/')
 def index():
-    products = Product.query.filter_by(is_active=True).all()
-    return render_template('index.html', products=products)
+    q = request.args.get('q', '').strip()
+    query = Product.query.filter_by(is_active=True)
+    if q:
+        query = query.filter(
+            db.or_(Product.name.ilike(f'%{q}%'), Product.category.ilike(f'%{q}%'))
+        )
+    products = query.all()
+    return render_template('index.html', products=products, q=q)
 
 
 @app.route('/product/<int:id>')
@@ -346,4 +352,4 @@ def payment_success():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=os.environ.get('FLASK_DEBUG') == '1', host=os.environ.get('FLASK_HOST', '127.0.0.1'), port=5000)
