@@ -61,8 +61,14 @@ jobs:
         run: |
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image \
             --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 $IMAGE:${{ github.sha }}
-
-            - name: Docker Hub login
+      - name: Check secrets
+        run: |
+          echo "Username length: ${#U}"
+          echo "Token length: ${#T}"
+        env:
+          U: ${{ secrets.DOCKERHUB_USERNAME }}
+          T: ${{ secrets.DOCKERHUB_TOKEN }}  
+      - name: Docker Hub login
         if: github.event_name == 'push'
         env:
           DH_USER: ${{ secrets.DOCKERHUB_USERNAME }}
